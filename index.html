@@ -25,20 +25,27 @@
             margin-bottom: 10px;
             font-size: 18px;
         }
-        .options button {
+        .options button, #submitAnswer {
             display: block;
             width: 100%;
             margin: 5px 0;
             padding: 10px;
-            border: none;
+            border: 2px solid black;
             background: #007bff;
             color: white;
             cursor: pointer;
             font-size: 16px;
             border-radius: 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
-        .options button:hover {
-            background: #0056b3;
+        .options button:hover, .selected {
+            background: #0056b3 !important;
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        #submitAnswer {
+            margin-top: 10px;
+            font-weight: bold;
         }
         .score {
             margin-top: 20px;
@@ -141,21 +148,21 @@
         quizContainer.innerHTML = `<div class='question'>${q.question}</div>`;
         let optionsHTML = "";
         q.options.forEach((option, index) => {
-            optionsHTML += `<button onclick="selectOption('${String.fromCharCode(65 + index)}', this)">${option}</button>`;
+            optionsHTML += `<button onclick="selectOption(this, '${String.fromCharCode(65 + index)}')">${option}</button>`;
         });
         quizContainer.innerHTML += `<div class='options'>${optionsHTML}</div>`;
         submitButton.style.display = "inline";
     }
 
-    function selectOption(selected, btn) {
+    function selectOption(btn, selected) {
+        document.querySelectorAll(".options button").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
         selectedOption = { btn, selected };
     }
 
     function submitAnswer() {
         if (!selectedOption) return;
-        const { btn, selected } = selectedOption;
-        const correctAnswer = questions[currentQuestionIndex].answer;
-        btn.classList.add(selected === correctAnswer ? "correct" : "wrong");
+        selectedOption.btn.classList.add(selectedOption.selected === questions[currentQuestionIndex].answer ? "correct" : "wrong");
         setTimeout(() => {
             currentQuestionIndex++;
             loadQuestion();
