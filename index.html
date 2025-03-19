@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Quiz Practice</title>
+    <title>English UTME Past Questions</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,6 +16,10 @@
             padding: 20px;
             background: white;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        h2, h3 {
+            text-align: center;
         }
         .question {
             margin-bottom: 10px;
@@ -41,54 +45,123 @@
             font-size: 20px;
             font-weight: bold;
         }
+        .wrong {
+            background: red !important;
+        }
+        .correct {
+            background: green !important;
+        }
+        #restart {
+            display: none;
+        }
+        #countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="quiz"></div>
-        <div class="score" id="score"></div>
-    </div>
+<div class="container">
+    <h2>English UTME Past Questions</h2>
+    <p id="review-info">You can review your wrong answers at the end of the practice.</p>
+    <label for="questionCount">Select Number of Questions:</label>
+    <select id="questionCount">
+        <option value="10">10 Questions</option>
+        <option value="20">20 Questions</option>
+        <option value="50">50 Questions</option>
+        <option value="custom">Custom (Max 150)</option>
+    </select>
+    <input type="number" id="customCount" min="1" max="150" style="display:none;">
+    <button onclick="startQuiz()">Start Quiz</button>
+    <button id="restart" onclick="location.reload()">Restart Quiz</button>
+    <div id="quiz"></div>
+    <button id="submitAnswer" style="display:none;" onclick="submitAnswer()">Submit Answer</button>
+    <div class="score" id="score"></div>
+    <div id="review-section" style="display:none;"></div>
+    <div id="countdown"></div>
+    <footer>© <span id="year"></span> TISAO Technologies</footer>
+</div>
 
-    <script>
-        const questions = [
-            { question: "In the match against the uplanders team, the sub mariners turned out to be the dark horse", options: ["played most brilliantly", "played below their usual form", "won unexpectedly", "lost as expected", "won as expected"], answer: "won unexpectedly" },
-            { question: "Only the small fry gets punished for such social misdemeanours.", options: ["small boys", "unimportant people", "frightened people", "frivolous people", "inexperienced people"], answer: "unimportant people" },
-            { question: "He spoke with his heart in his mouth", options: ["courageously", "with such unusual cowardice", "with a lot of confusion in his speech", "without being able to make up his mind", "with fright and agitation"], answer: "with fright and agitation" },
-            { question: "The leader in today's issue of our popular newspaper focuses on inflation", options: ["president", "headline", "editorial", "columnist", "proprietor"], answer: "editorial" },
-            { question: "From the ways my friend talks, you can see he is such a bore", options: ["rude", "brilliant", "uninteresting", "overbearing", "humorous"], answer: "uninteresting" }
-        ];
-        
-        let currentQuestionIndex = 0;
-        let score = 0;
-        const quizContainer = document.getElementById("quiz");
-        const scoreContainer = document.getElementById("score");
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+    let questions = [];
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedQuestionCount = 10;
+    let wrongAnswers = [];
+    let selectedOption = null;
+    const quizContainer = document.getElementById("quiz");
+    const scoreContainer = document.getElementById("score");
+    const reviewSection = document.getElementById("review-section");
+    const submitButton = document.getElementById("submitAnswer");
+    const countdownTimer = document.getElementById("countdown");
 
-        function loadQuestion() {
-            if (currentQuestionIndex >= questions.length) {
-                quizContainer.innerHTML = `<h2>Quiz Completed!</h2>`;
-                scoreContainer.innerHTML = `Final Score: ${score} / ${questions.length}`;
-                return;
-            }
-
-            const q = questions[currentQuestionIndex];
-            quizContainer.innerHTML = `<div class='question'>${q.question}</div>`;
-            let optionsHTML = "";
-            q.options.forEach(option => {
-                optionsHTML += `<button onclick="checkAnswer('${option}')">${option}</button>`;
+    function startQuiz() {
+        document.getElementById("review-info").style.display = "none";
+        document.getElementById("questionCount").style.display = "none";
+        document.getElementById("customCount").style.display = "none";
+        document.querySelector("button[onclick='startQuiz()']").style.display = "none";
+        document.getElementById("restart").style.display = "inline";
+        fetch('./question.json?subject=english&questionNumber=10')
+            .then(response => response.json())
+            .catch(() => fetch('./question.csv')
+                .then(response => response.text())
+                .then(data => {
+                    const rows = data.split('\n').slice(1);
+                    return rows.map(row => {
+                        const parts = row.split(',');
+                        return {
+                            question: parts[0],
+                            options: [`A. ${parts[1]}`, `B. ${parts[2]}`, `C. ${parts[3]}`, `D. ${parts[4]}`, `E. ${parts[5]}`],
+                            answer: parts.length === 7 ? parts[6].trim() : ["A", "B", "C", "D", "E"][Math.floor(Math.random() * 5)]
+                        };
+                    });
+                }))
+            .then(data => {
+                questions = data.sort(() => Math.random() - 0.5).slice(0, selectedQuestionCount);
+                loadQuestion();
             });
-            quizContainer.innerHTML += `<div class='options'>${optionsHTML}</div>`;
-        }
+    }
 
-        function checkAnswer(selected) {
-            const correctAnswer = questions[currentQuestionIndex].answer;
-            if (selected === correctAnswer) {
-                score++;
-            }
+    function loadQuestion() {
+        if (currentQuestionIndex >= questions.length) {
+            quizContainer.innerHTML = `<h2>Quiz Completed!</h2>`;
+            scoreContainer.innerHTML = `Final Score: ${score} / ${questions.length}`;
+            return;
+        }
+        const q = questions[currentQuestionIndex];
+        quizContainer.innerHTML = `<div class='question'>${q.question}</div>`;
+        let optionsHTML = "";
+        q.options.forEach((option, index) => {
+            optionsHTML += `<button onclick="selectOption('${String.fromCharCode(65 + index)}', this)">${option}</button>`;
+        });
+        quizContainer.innerHTML += `<div class='options'>${optionsHTML}</div>`;
+        submitButton.style.display = "inline";
+    }
+
+    function selectOption(selected, btn) {
+        selectedOption = { btn, selected };
+    }
+
+    function submitAnswer() {
+        if (!selectedOption) return;
+        const { btn, selected } = selectedOption;
+        const correctAnswer = questions[currentQuestionIndex].answer;
+        btn.classList.add(selected === correctAnswer ? "correct" : "wrong");
+        setTimeout(() => {
             currentQuestionIndex++;
             loadQuestion();
-        }
-
-        loadQuestion();
-    </script>
+        }, 1500);
+        submitButton.style.display = "none";
+    }
+</script>
 </body>
 </html>
