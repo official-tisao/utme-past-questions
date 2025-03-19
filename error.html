@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Quiz Practice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .options button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            border: none;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        .options button:hover {
+            background: #0056b3;
+        }
+        .score {
+            margin-top: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="quiz"></div>
+        <div class="score" id="score"></div>
+    </div>
+
+    <script>
+        const questions = [
+            { question: "In the match against the uplanders team, the sub mariners turned out to be the dark horse", options: ["played most brilliantly", "played below their usual form", "won unexpectedly", "lost as expected", "won as expected"], answer: "won unexpectedly" },
+            { question: "Only the small fry gets punished for such social misdemeanours.", options: ["small boys", "unimportant people", "frightened people", "frivolous people", "inexperienced people"], answer: "unimportant people" },
+            { question: "He spoke with his heart in his mouth", options: ["courageously", "with such unusual cowardice", "with a lot of confusion in his speech", "without being able to make up his mind", "with fright and agitation"], answer: "with fright and agitation" },
+            { question: "The leader in today's issue of our popular newspaper focuses on inflation", options: ["president", "headline", "editorial", "columnist", "proprietor"], answer: "editorial" },
+            { question: "From the ways my friend talks, you can see he is such a bore", options: ["rude", "brilliant", "uninteresting", "overbearing", "humorous"], answer: "uninteresting" }
+        ];
+        
+        let currentQuestionIndex = 0;
+        let score = 0;
+        const quizContainer = document.getElementById("quiz");
+        const scoreContainer = document.getElementById("score");
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                quizContainer.innerHTML = `<h2>Quiz Completed!</h2>`;
+                scoreContainer.innerHTML = `Final Score: ${score} / ${questions.length}`;
+                return;
+            }
+
+            const q = questions[currentQuestionIndex];
+            quizContainer.innerHTML = `<div class='question'>${q.question}</div>`;
+            let optionsHTML = "";
+            q.options.forEach(option => {
+                optionsHTML += `<button onclick="checkAnswer('${option}')">${option}</button>`;
+            });
+            quizContainer.innerHTML += `<div class='options'>${optionsHTML}</div>`;
+        }
+
+        function checkAnswer(selected) {
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            if (selected === correctAnswer) {
+                score++;
+            }
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
