@@ -6,21 +6,24 @@
   <title>English UTME Past Questions</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+       font-family: 'Poppins', sans-serif;
       margin: 20px;
-      background-color: #f4f4f4;
+      background-color: #cbc9c9;
     }
     .container {
       max-width: 600px;
-      margin: auto;
-      padding: 20px;
+      margin:100px auto;
+      padding: 50px;
       background: white;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 0 10px rgba(0.1, 0.1, 0.1, 0.1);
       position: relative;
+      border-radius: 15px;
     }
     h2, h3 {
       text-align: center;
     }
+
+   
     .question {
       margin-top: 10px;
       margin-bottom: 10px;
@@ -32,8 +35,8 @@
       margin: 5px 0;
       padding: 10px;
       /*border: 2px solid black;*/
-      background: #007bff;
-      color: white;
+      background: #fff;
+      color:Black;
       cursor: pointer;
       font-size: 16px;
       border-radius: 5px;
@@ -41,25 +44,58 @@
       box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     }
     .questionCountClass {
-      font-size: 16px;
-      width: 49%;
+      font-size: 15px;
+      width: 50%;
+      font-family:'Poppins', sans-serif ;
+      padding: 5px 5px 5px 5px;
+      width: fit-content;
+      height: fit-content;
+      border-radius: 5px;
+      
     }
-    .options button:hover, .selected {
-      background: #0056b3 !important;
+
+
+    .options button:hover, .selected  {
+      background: black !important;
       box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+      color: white !important;
     }
     .start-quiz-btn{
-      margin-top: 15px;
+      margin:auto;
+      border-radius: 10px;
+      width: 100px;
+      height: 40px;
+      font-family: poppins;
+      padding: 10px 10px 10px 10px;
+      font-size: small;
+      background: black;
+      color: white;
     }
+
+    #start-quiz{
+      margin-top: 30px;
+    }
+    
     #customCount{
       width: 50%;
     }
-    #submitAnswer , #customCount {
+   #customCount {
       margin-top: 10px;
       font-weight: bold;
       border-radius: 5px;
       border: 2px solid black;
     }
+
+    #submitAnswer{
+      margin: auto;
+      font-family: poppins;
+      padding: 10px 10px 10px 10px;
+      font-size: small;
+      background: black;
+      color:white;
+      width: fit-content;
+    }
+    
     .score {
       margin-top: 20px;
       font-size: 20px;
@@ -73,18 +109,31 @@
     }
     #restart {
       display: none;
+      font-family: poppins;
+      padding: 10px 10px 10px 10px;
+      font-size: small;
+      background: black;
+      color: white;
+      border-radius: 10px;
     }
+
     #countdown {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 24px;
-      font-weight: bold;
+      font-size: 10px;
+      font-weight: small;
       background: rgba(255, 255, 255, 0.7);
       padding: 10px;
       border-radius: 10px;
       display: none;
+    }
+    /*footer*/
+    footer{
+      text-align: center;
+      padding-top: 10px;
+      font-size: small;
     }
   </style>
 </head>
@@ -92,23 +141,27 @@
 <div class="container">
   <h2>English UTME Past Questions</h2>
   <p id="review-info">You can review your wrong answers at the end of the practice.</p>
-  <label class="questionCountClass" id="questionCountLabel" for="questionCount">Select Number of Questions:</label>
+  <div class="selector">
+    <label class="questionCountClass" id="questionCountLabel" for="questionCount">Select Number of Questions:</label>
   <select class="questionCountClass" id="questionCount" oninput="customCountClick(this)">
     <option value="10">10 Questions</option>
     <option value="20">20 Questions</option>
     <option value="50">50 Questions</option>
     <option value="custom">Custom (Max 150)</option>
   </select>
+</div>
   <label class="questionCountClass" id="questionCountLabel2" for="questionCount" style="display:none;">Enter Number of Questions (Max 150):</label>
   <input type="number" class="questionCountClass" id="customCount" oninput="customCountClick(this)" min="1" max="150" style="display:none;">
+  <div id="start-quiz">
   <button class="start-quiz-btn" onclick="startQuiz()">Start Quiz</button>
+</div>
   <button id="restart" onclick="location.reload()">Restart Quiz</button>
   <div id="quiz"></div>
-  <button id="submitAnswer" style="display:none;" onclick="submitAnswer()">Submit Answer</button>
+  <button id="submitAnswer" class="submitAnswer" style="display:none;" onclick="submitAnswer()">Submit Answer</button>
   <div class="score" id="score"></div>
   <div id="review-section" style="display:none;"></div>
   <div id="countdown">Loading...</div>
-  <footer>TISAO Technologies © <span id="year"></span></footer>
+  <footer>TISAO Technologies © <span id="year">2025</span></footer>
 </div>
 
 <script>
